@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>农历分享卡片</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: 'Noto Serif SC', 'SimSun', "Microsoft YaHei", sans-serif;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23d9b38c" opacity="0.1" d="M0,0 L100,0 L100,100 L0,100 Z"/><path fill="none" stroke="%238b4513" stroke-width="1" opacity="0.2" d="M0,50 L100,50 M50,0 L50,100"/></svg>');
+        }
+
+        .card {
+            width: 1080px;
+            height: 1920px;
+            background-color: #fff;
+            border-radius: 1.2rem;
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(to bottom, #fff9e6, #fff);
+            border: 1rem solid #8b0000;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><path fill="none" stroke="%23d9b38c" stroke-width="0.5" opacity="0.3" d="M0,0 L40,0 L40,40 L0,40 Z"/><path fill="none" stroke="%23d9b38c" stroke-width="0.5" opacity="0.3" d="M0,20 L40,20 M20,0 L20,40"/></svg>');
+            z-index: 0;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #8b0000, #a52a2a);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            border-bottom: 0.5rem solid #d4af37;
+        }
+
+        .card-header h1 {
+            font-size: 5rem;
+            text-shadow: 0.4rem 0.4rem 0.6rem rgba(0, 0, 0, 0.5);
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 4rem 0;
+        }
+
+        .date-info .date {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #8a2a2a;
+        }
+
+        .date-info .lunar {
+            font-size: 4rem;
+            color: #5a5a5a;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+
+        .content-section {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100% - 20rem);
+            justify-content: space-around;
+        }
+
+        .section {
+            margin-bottom: 1rem;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 1rem;
+            padding: 1rem;
+            border-left: 0.5rem solid #8b0000;
+            box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.05);
+        }
+
+        .section h2 {
+            color: #8b0000;
+            margin-bottom: 1rem;
+            font-size: 4rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 0.2rem solid #d4af37;
+            padding-bottom: 0.5rem;
+        }
+
+        .section h2::before {
+            content: '◆';
+            color: #d4af37;
+            margin-right: 1rem;
+        }
+
+        .section p {
+            color: #555;
+            line-height: 1.4;
+            font-size: 3rem;
+        }
+
+        .yi-ji {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .yi-ji p {
+            font-size: 3rem;
+            color: #555;
+        }
+        .yi,
+        .ji {
+            width: 48%;
+            padding: 15px;
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .yi {
+            background-color: rgba(50, 205, 50, 0.1);
+            border: 0.4rem solid #32cd32;
+        }
+
+        .ji {
+            background-color: rgba(255, 99, 71, 0.1);
+            border: 0.4rem solid #ff6347;
+        }
+
+        .yi h3,
+        .ji h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 3rem;
+        }
+
+        .yi h3 {
+            color: #2e8b57;
+        }
+
+        .ji h3 {
+            color: #b22222;
+        }
+
+        .card-footer {
+            background: linear-gradient(135deg, #8b0000, #a52a2a);
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            border-top: 0.5rem solid #d4af37;
+            flex-shrink: 0;
+        }
+
+        .footer-text {
+            font-size: 4rem;
+            text-shadow: 0.2rem 0.2rem 0.3rem rgba(0, 0, 0, 0.5);
+        }
+
+        /* 中国风装饰元素 */
+        .corner {
+            position: absolute;
+            width: 3.2rem;
+            height: 3.2rem;
+            border-color: #d4af37;
+            border-style: solid;
+            z-index: 2;
+        }
+
+        .corner-top-left {
+            top: 1rem;
+            left: 1rem;
+            border-width: 0.5rem 0 0 0.5rem;
+        }
+
+        .corner-top-right {
+            top: 1rem;
+            right: 1rem;
+            border-width: 0.5rem 0.5rem 0 0;
+        }
+
+        .corner-bottom-left {
+            bottom: 1rem;
+            left: 1rem;
+            border-width: 0 0 0.5rem 0.5rem;
+        }
+
+        .corner-bottom-right {
+            bottom: 1rem;
+            right: 1rem;
+            border-width: 0 0.5rem 0.5rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <!-- 四角装饰 -->
+        <div class="corner corner-top-left"></div>
+        <div class="corner corner-top-right"></div>
+        <div class="corner corner-bottom-left"></div>
+        <div class="corner corner-bottom-right"></div>
+
+        <div class="card-header">
+            <h1>今日黄历</h1>
+        </div>
+
+        <div class="date-info">
+            <div class="date">2025年8月7日 · 星期四</div>
+            <div class="lunar">农历六月十四 · 小望月 · 立秋</div>
+        </div>
+
+        <div class="content-section">
+            <div class="yi-ji">
+                <div class="yi">
+                    <h3>✅宜</h3>
+                    <p>出行.上任.会友.上书.见工</p>
+                </div>
+                <div class="ji">
+                    <h3>❌忌</h3>
+                    <p>动土.开仓.嫁娶.纳采</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>神位信息</h2>
+                <p>喜神：东南 福神：东北 财神：正北</p>
+                <p>阳贵：东北 阴贵：西南</p>
+            </div>
+
+            <div class="section">
+                <h2>胎神位置</h2>
+                <p>房床若移整,火炉休要动,厨灶莫相干</p>
+                <p>胎神在房内东停留5天</p>
+            </div>
+
+            <div class="section">
+                <h2>冲煞信息</h2>
+                <p>猴日冲(壬寅)虎</p>
+                <p>岁煞南</p>
+            </div>
+
+            <div class="section">
+                <h2>五行信息</h2>
+                <p>甲子五行：水</p>
+                <p>年纳音：佛灯火</p>
+                <p>月纳音：泉中水</p>
+                <p>日纳音：大驿土</p>
+            </div>
+
+
+        </div>
+
+        <div class="card-footer">
+            <p class="footer-text">黄历仅供参考，愿君今日安康顺遂</p>
+        </div>
+    </div>
+<script>
+
+
+    // 获取星期几
+    function getWeekDay(dateStr) {
+        const date = new Date(dateStr);
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        return weekdays[date.getDay()];
+    }
+
+    // 请求接口数据并填充到页面
+    async function fetchAlmanacData() {
+        try {
+            const data = {"code":1,"msg":"成功获取","time":"1754561650","data":{"GregorianDateTime":"2025-08-07","LunarDateTime":"2025-6-14","LunarShow":"","IsJieJia":"0","LJie":"","GJie":"","Yi":"出行.上任.会友.上书.见工","Ji":"动土.开仓.嫁娶.纳采","ShenWei":"喜神：东南 福神：东北 财神：正北阳贵：东北 阴贵：西南 ","Taishen":"房床若移整,火炉休要动,厨灶莫相干胎神在房内东停留5天","Chong":"猴日冲(壬寅)虎","SuiSha":"岁煞南","WuxingJiazi":"水","WuxingNaYear":"佛灯火","WuxingNaMonth":"泉中水","WuxingNaDay":"大驿土","MoonName":"小望月","XingEast":"西方奎木狼-凶","XingWest":"狮子座","PengZu":"戊不受田 申不安床","JianShen":"建","TianGanDiZhiYear":"乙巳","TianGanDiZhiMonth":"甲申","TianGanDiZhiDay":"戊申","LMonthName":"季夏","LYear":"蛇","LMonth":"六月","LDay":"十四","SolarTermName":"立秋"}}
+            if (data.code === 1) {
+                const almanacData = data.data;
+                
+                // 填充日期信息
+                const weekDay = getWeekDay(almanacData.GregorianDateTime);
+                let dateHtml = `${almanacData.GregorianDateTime} · ${weekDay}`;
+                const dateElement = document.querySelector('.date-info .date');
+                if (dateElement) {
+                    dateElement.textContent = dateHtml;
+                }
+                
+                // 填充农历信息（注意SolarTermName可能不存在）
+                let lunarHtml = `农历${almanacData.LMonth}${almanacData.LDay} · ${almanacData.MoonName}`;
+                if (almanacData.SolarTermName) {
+                    lunarHtml += ` · ${almanacData.SolarTermName}`;
+                }
+                const lunarElement = document.querySelector('.date-info .lunar');
+                if (lunarElement) {
+                    lunarElement.textContent = lunarHtml;
+                }
+                
+                // 填充宜忌
+                const yiElement = document.querySelector('.yi p');
+                if (yiElement) {
+                    yiElement.textContent = almanacData.Yi;
+                }
+                const jiElement = document.querySelector('.ji p');
+                if (jiElement) {
+                    jiElement.textContent = almanacData.Ji;
+                }
+                
+                // 填充神位信息
+                const shenWeiParts = almanacData.ShenWei.split('阳贵：');
+                const xiFuCai = shenWeiParts[0];
+                const yangYinGui = `阳贵：${shenWeiParts[1]}`;
+                const shenWeiSection = document.querySelectorAll('.section')[0];
+                if (shenWeiSection) {
+                    const pElements = shenWeiSection.querySelectorAll('p');
+                    if (pElements.length >= 2) {
+                        pElements[0].textContent = xiFuCai;
+                        pElements[1].textContent = yangYinGui;
+                    }
+                }
+                
+                // 填充胎神位置
+                const taiShenParts = almanacData.Taishen.split('胎神在');
+                const taiShenSection = document.querySelectorAll('.section')[1];
+                if (taiShenSection) {
+                    const pElements = taiShenSection.querySelectorAll('p');
+                    if (pElements.length >= 2) {
+                        pElements[0].textContent = taiShenParts[0];
+                        pElements[1].textContent = `胎神在${taiShenParts[1]}`;
+                    }
+                }
+                
+                // 填充冲煞信息
+                const chongShaSection = document.querySelectorAll('.section')[2];
+                if (chongShaSection) {
+                    const pElements = chongShaSection.querySelectorAll('p');
+                    if (pElements.length >= 2) {
+                        pElements[0].textContent = almanacData.Chong;
+                        pElements[1].textContent = almanacData.SuiSha;
+                    }
+                }
+                
+                // 填充五行信息
+                const wuXingSection = document.querySelectorAll('.section')[3];
+                if (wuXingSection) {
+                    const pElements = wuXingSection.querySelectorAll('p');
+                    if (pElements.length >= 4) {
+                        pElements[0].textContent = `甲子五行：${almanacData.WuxingJiazi}`;
+                        pElements[1].textContent = `年纳音：${almanacData.WuxingNaYear}`;
+                        pElements[2].textContent = `月纳音：${almanacData.WuxingNaMonth}`;
+                        pElements[3].textContent = `日纳音：${almanacData.WuxingNaDay}`;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('请求日历数据失败:', error);
+        }
+    }
+
+    // 页面加载完成后执行
+    window.addEventListener('DOMContentLoaded', fetchAlmanacData);
+</script>
+</body>
+
+</html>
