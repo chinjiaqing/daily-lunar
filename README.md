@@ -1,20 +1,17 @@
 # #️⃣ 每日黄历卡片
 
-一个自动生成每日黄历`图片`、`视频`、上传至 OSS、并通过邮件通知的 Node.js 项目。
+一个每日自动生成每日黄历`图片`、`视频`、上传至 OSS、并通过邮件通知的 Node.js 项目。
 
 ![卡片预览](output/main.png)
 
-<video controls width="100%">
-  <source src="output/main.mp4" type="video/mp4">
-  您的浏览器不支持视频播放
-</video>
+![视频演示](https://github.com/chinjiaqing/daily-lunar/raw/master/output/main.mp4)
 
 ## ✨ 功能特性
 
-📅 每日自动生成 - 上海时间每天 00:30 准时生成当日黄历卡片/视频
-☁️ 云存储支持 - 自动上传视频到阿里云 OSS
-✉️ 通知系统 - 邮件通知生成结果（支持成功/失败）
-🔄 自动化工作流 - GitHub Actions 定时执行并提交结果
+- 📅 每日自动生成 - 上海时间每天 00:30 准时生成当日黄历卡片/视频
+- ☁️ 云存储支持 - 自动上传视频到阿里云 OSS
+- ✉️ 通知系统 - 邮件通知生成结果（支持成功/失败）
+- 🔄 自动化工作流 - GitHub Actions 定时执行并提交结果
 
 ---
 
