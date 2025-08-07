@@ -4,7 +4,8 @@
 
 ![卡片预览](output/main.png)
 
-![视频演示](https://github.com/chinjiaqing/daily-lunar/raw/master/output/main.mp4)
+![视频预览](output/main.gif)
+
 
 ## ✨ 功能特性
 
@@ -91,8 +92,8 @@ npm run dev
 ```json
 {
     "date":"2025-08-07",
-    "oss_url"："http://yourossname.oss-cn-chengdu.aliyuncs.com/output/main.mp4",
-    "oss_url"："output/main.mp4"
+    "oss_url":"http://yourossname.oss-cn-chengdu.aliyuncs.com/output/main.mp4",
+    "oss_url":"output/main.mp4"
 }
 ```
 

@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require('fs');
 const path = require('path');
-const {dayjs} = require('./dayjs')
+const { dayjs } = require('./dayjs')
 const puppeteer = require('puppeteer');
 const ffmpeg = require('fluent-ffmpeg');
 
@@ -64,8 +64,13 @@ async function generate() {
                 .save(outputVideoPath)
                 .on('start', command => console.log('执行命令: ' + command))
                 .on('progress', progress => console.log('处理中', progress))
-                .on('end', () => {
+                .on('end', async () => {
                     console.log('视频生成成功: ' + outputVideoPath);
+                    try {
+                        await generatePreviewGif(outputVideoPath,path.resolve(outputDirPath,'main.gif'))
+                    } catch(err){
+                        console.error(`生成预览gif图失败`,err)
+                    }
                     resolve(outputVideoPath);
                 })
                 .on('error', err => {
@@ -78,6 +83,35 @@ async function generate() {
         console.error('发生错误:', err);
         throw err;
     }
+}
+
+async function generatePreviewGif(input, output) {
+    return new Promise((resolve, reject) => {
+        ffmpeg(input)
+            .videoFilters([
+                { filter: 'fps', options: 15 },
+                { filter: 'scale', options: '800:-1', flags: 'lanczos' },
+                { filter: 'split', outputs: ['split1', 'split2'] },
+                { filter: 'palettegen', inputs: 'split1', outputs: 'palette' },
+                { filter: 'paletteuse', inputs: ['split2', 'palette'] }
+            ])
+            .outputOptions(['-loop 0'])
+            .save(output)
+            .on('start', command => console.log(`开始转换: ${command}`))
+            .on('progress', progress => {
+                if (progress.percent) {
+                    console.log(`处理进度: ${Math.round(progress.percent)}%`);
+                }
+            })
+            .on('end', () => {
+                console.log(`✅ GIF 生成成功: ${output}`);
+                resolve(output);
+            })
+            .on('error', err => {
+                console.error(`❌ 转换错误: ${err.message}`);
+                reject(err);
+            });
+    });
 }
 
 module.exports = { generate };
